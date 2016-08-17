@@ -26,6 +26,8 @@ args_cvm = argparse.Namespace(name='Name', tenant_id=tenant_id, distr_id=distr_i
                              open_support_access=True, public_key_id=public_key_id,
                              software_id=software_id, api_key=api_key, customer_id=customer_id, raw=False)
 
+args_vm = argparse.Namespace(vm_id=vm_id, tenant_id=tenant_id, api_key=api_key, customer_id=customer_id, raw=False)
+
 
 class TestInflo(unittest.TestCase):
     def setUp(self):
@@ -104,3 +106,15 @@ class TestInflo(unittest.TestCase):
                                            open_support_access=args_cvm.open_support_access,
                                            public_key_id=args_cvm.public_key_id, software_id=args_cvm.software_id,
                                            api_key=args_cvm.api_key, customer_id=args_cvm.customer_id, raw=args_cvm.raw)
+
+    def test_invoke_delete_vm(args):
+        inflo.delete_vm = mock.MagicMock(return_value=0)
+        inflo.parser.invoke_delete_vm(args)
+        inflo.delete_vm.assert_called_with(vm_id=args_vm.vm_id, tenant_id=args_vm.tenant_id, api_key=args_vm.api_key,
+                                           customer_id=args_vm.customer_id, raw=args_vm.raw)
+
+    def test_invoke_start_vm(args):
+        inflo.start_vm = mock.MagicMock(return_value=0)
+        inflo.parser.invoke_start_vm(args)
+        inflo.start_vm.assert_called_with(vm_id=args_vm.vm_id, tenant_id=args_vm.tenant_id, api_key=args_vm.api_key,
+                                           customer_id=args_vm.customer_id, raw=args_vm.raw)
