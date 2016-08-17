@@ -8,6 +8,7 @@ import inflo
 api_key = 'test_key'
 customer_id = 'test_id'
 vm_id = 'test_vm_id'
+
 table_format = ['header1', 'header2']
 
 script_args = ['-a', api_key, '-i', customer_id, 'tenant-info']
@@ -29,15 +30,14 @@ class TestInflo(unittest.TestCase):
         inflo.get_info = mock.MagicMock(return_value=0)
         inflo.parser.invoke_server_list(args)
         inflo.get_info.assert_called_with(api_key=args.api_key, customer_id=args.customer_id, raw=False,
-                                          url='https://api.flops.ru/api/v1/vm/', table_format=['id', 'name', 'memory',
-                                               'disk', 'cpu', 'ipAddresses', ('2', 'distribution', 'name')])
+                                          url='https://api.flops.ru/api/v1/vm/', table_format=['id', 'name'])
 
     def test_inflo_invoke_os_list(self):
         inflo.get_info = mock.MagicMock(return_value=0)
         inflo.parser.invoke_os_list(args)
         inflo.get_info.assert_called_with(api_key=args.api_key, customer_id=args.customer_id, raw=False,
-                                          url='https://api.flops.ru/api/v1/distribution/', table_format=['id', 'name',
-                                              'description', 'bitness'])
+                                          url='https://api.flops.ru/api/v1/distribution/',
+                                          table_format=['id', 'description'])
 
     def test_inflo_invoke_get_software(self):
         inflo.get_info = mock.MagicMock(return_value=0)
@@ -49,12 +49,36 @@ class TestInflo(unittest.TestCase):
         inflo.get_info = mock.MagicMock(return_value=0)
         inflo.parser.invoke_get_tariffs(args)
         inflo.get_info.assert_called_with(api_key=args.api_key, customer_id=args.customer_id, raw=False,
-                                          url='https://api.flops.ru/api/v1/tariffs/', table_format=['id', 'name',
-                                          'memory', 'disk', 'cpu', 'ipCount', 'onDemand', 'forWindows'])
+                                          url='https://api.flops.ru/api/v1/tariffs/', table_format=['id', 'name'])
 
     def test_inflo_invoke_get_pubkeys(self):
         inflo.get_info = mock.MagicMock(return_value=0)
         inflo.parser.invoke_get_pubkeys(args)
         inflo.get_info.assert_called_with(api_key=args.api_key, customer_id=args.customer_id, raw=False,
-                        url='https://api.flops.ru/api/v1/pubkeys/', table_format=['id', 'name', 'type', 'publicKey',
-                             'timeAdded'])
+                                          url='https://api.flops.ru/api/v1/pubkeys/', table_format=['id', 'publicKey'])
+
+    def test_inflo_invoke_get_vm_snapshots(args):
+        inflo.get_info = mock.MagicMock(return_value=0)
+        inflo.parser.invoke_get_vm_snapshots(args)
+        inflo.get_info.assert_called_with(api_key=args.api_key, customer_id=args.customer_id, raw=False,
+                                          url='https://api.flops.ru/api/v1/vm/{0}/snapshots/'.format(vm_id),
+                                          table_format=['id', 'name'])
+
+    def test_inflo_invoke_get_vm_backups(args):
+        inflo.get_info = mock.MagicMock(return_value=0)
+        inflo.parser.invoke_get_vm_backups(args)
+        inflo.get_inflo.assert_called_with(api_key=args.api_key, customer_id=args.customer_id, raw=False,
+                                           url='https://api.flops.ru/api/v1/vm/{0}/backups/'.format(vm_id),
+                                           table_format=['id', 'size'])
+
+    def test_inflo_invoke_get_vm_info(args):
+        inflo.get_info = mock.MagicMock(return_value=0)
+        inflo.parser.invoke_get_vm_info(args)
+        inflo.get_info.assert_called_with(api_key=args.api_key, customer_id=args.customer_id, raw=False,
+                                          url='https://api.flops.ru/api/v1/vm/{0}/'.format(vm_id),
+                                          table_format=['id', 'name'])
+
+    def test_invoke_store_conf(args):
+        inflo.set_conf = mock.MagicMock(return_value=0)
+        inflo.parser.invoke_store_conf(args)
+        inflo.set_conf.assert_called_with(ext_api=args.api_key, ext_id=args.customer_id)
