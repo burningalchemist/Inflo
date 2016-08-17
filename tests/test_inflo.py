@@ -8,12 +8,23 @@ import inflo
 api_key = 'test_key'
 customer_id = 'test_id'
 vm_id = 'test_vm_id'
+tenant_id = 'test_tenant_id'
+distr_id = 'test_distr_id'
+tariff_id = 'test_tariff_id'
+public_key_id = 'test_public_key_id'
+software_id = 'test_software_id'
+
 
 table_format = ['header1', 'header2']
 
 script_args = ['-a', api_key, '-i', customer_id, 'tenant-info']
 args = argparse.Namespace(api_key=api_key, customer_id=customer_id, raw=False,
                           url='https://api.flops.ru/api/v1/tenant/', table_format=['id', 'description'])
+
+args_cvm = argparse.Namespace(name='Name', tenant_id=tenant_id, distr_id=distr_id, tariff_id=tariff_id, memory='1024',
+                             disk='2GB', cpu='4', ip_count='1', password='password', send_password=True,
+                             open_support_access=True, public_key_id=public_key_id,
+                             software_id=software_id, api_key=api_key, customer_id=customer_id, raw=False)
 
 
 class TestInflo(unittest.TestCase):
@@ -82,3 +93,14 @@ class TestInflo(unittest.TestCase):
         inflo.set_conf = mock.MagicMock(return_value=0)
         inflo.parser.invoke_store_conf(args)
         inflo.set_conf.assert_called_with(ext_api=args.api_key, ext_id=args.customer_id)
+
+    def test_invoke_create_vm(args):
+        inflo.create_vm = mock.MagicMock(return_value=0)
+        inflo.parser.invoke_create_vm(args)
+        inflo.create_vm.assert_called_with(name=args_cvm.name, tenant_id=args_cvm.tenant_id, distr_id=args_cvm.distr_id,
+                                           tariff_id=args_cvm.tariff_id, memory=args_cvm.memory, disk=args_cvm.disk,
+                                           cpu=args_cvm.cpu, ip_count=args_cvm.ip_count, password=args_cvm.password,
+                                           send_password=args_cvm.send_password,
+                                           open_support_access=args_cvm.open_support_access,
+                                           public_key_id=args_cvm.public_key_id, software_id=args_cvm.software_id,
+                                           api_key=args_cvm.api_key, customer_id=args_cvm.customer_id, raw=args_cvm.raw)
