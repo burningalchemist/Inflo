@@ -71,7 +71,7 @@ def invoke_get_vm_snapshots(args):
 def invoke_get_vm_backups(args):
     url = '{0}vm/{1}/backups/'.format(api_link, args.vm_id)
     inflo.get_info(api_key=args.api_key, customer_id=args.customer_id, raw=args.raw, url=url,
-                   table_format=[['id', 'size', 'timeAdded']])
+                   table_format=['id', 'size', 'timeAdded'])
 
 
 def invoke_get_pubkeys(args):
@@ -93,7 +93,7 @@ def invoke_get_tariffs(args):
 
 
 def invoke_create_vm(args):
-    if int(args.disk)/int(args.memory) < 64:
+    if int(args.disk) / int(args.memory) < 64:
         logger.debug('HDD/MEMORY is lower than 64. Exiting...')
         logger.info('HDD/MEMORY must be equal or great than 64. Exiting...')
         sys.exit(0)
